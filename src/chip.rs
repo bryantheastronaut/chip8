@@ -1,12 +1,50 @@
 /// See https://en.wikipedia.org/wiki/CHIP-8#Opcode_table for opcodes
 
-pub fn initialize() {
-    // initialize memory
+pub struct Chip {
+    opcode: u16,
+    memory: [u8; 4096],
+    v: [u8; 16], // cpu registers
+    i: usize, // index register
+    pc: usize, // program counter
+    gfx: [u8; 2048], // on screen graphics. each represents one pixel 64px x 32px
+    stack: [u16; 16],
+    sp: usize, // stack pointer
+    delay_timer: u8,
+    sound_timer: u8,
+    key: [u16; 16], // might not need. i think sdl2 will handle key events for me
 }
 
-pub fn emulateCycle() {
-    // fetch opcode
-    // decode opcode
-    // execute opcode
-    // update timers
+impl Chip {
+    pub fn new() -> Chip {
+        let mut chip = Chip {
+            opcode: 0,
+            memory: [0; 4096],
+            v: [0; 16],
+            i: 0,
+            pc: 0x200,
+            gfx: [0; 2048],
+            stack: [0; 16],
+            sp: 0,
+            delay_timer: 0,
+            sound_timer: 0,
+            key: [0; 16],
+        };
+        for i in 0..80 {
+            chip.memory[i] = fontset[i];
+        }
+        chip
+    }
 }
+
+
+
+static fontset: [u8; 80] = [
+    0xF0, 0x90, 0x90, 0x90, 0xF0, 0x20, 0x60, 0x20, 0x20, 0x70,
+    0xF0, 0x10, 0xF0, 0x80, 0xF0, 0xF0, 0x10, 0xF0, 0x10, 0xF0,
+    0x90, 0x90, 0xF0, 0x10, 0x10, 0xF0, 0x80, 0xF0, 0x10, 0xF0,
+    0xF0, 0x80, 0xF0, 0x90, 0xF0, 0xF0, 0x10, 0x20, 0x40, 0x40,
+    0xF0, 0x90, 0xF0, 0x90, 0xF0, 0xF0, 0x90, 0xF0, 0x10, 0xF0,
+    0xF0, 0x90, 0xF0, 0x90, 0x90, 0xE0, 0x90, 0xE0, 0x90, 0xE0,
+    0xF0, 0x80, 0x80, 0x80, 0xF0, 0xE0, 0x90, 0x90, 0x90, 0xE0,
+    0xF0, 0x80, 0xF0, 0x80, 0xF0, 0xF0, 0x80, 0xF0, 0x80, 0x80,
+];
